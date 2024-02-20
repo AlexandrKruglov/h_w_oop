@@ -17,12 +17,22 @@ class Category:
         self.count_name += 1
         self.count_products = len(self.__products)
 
+
+    def get_list_podukts(self):
+        return self.__products
+
+
     def get_obj(self, obj_prod):
         '''
          добавляент продукт в список продуктов
         :param obj_prod:принимоет объект класса продукт
         '''
+        j = Category.get_list_podukts()
+        for index, item in enumerate(j):
+            if item.name == obj_prod.name:
+                j[index] = obj_prod
         self.__products.append(obj_prod)
+
 
     @property
     def input_info(self):
@@ -56,13 +66,20 @@ class Product:
         self.quantity = quantity
 
     @classmethod
-    def create_product(cls, dict_prod, ):
+    def create_product(cls, dict_prod):
         '''
         создает объект класса продукт из словаря
         :param dict_prod: словарь
         :return: объект клааса продукт
         '''
+        list_prod = Category.get_list_podukts()
         new_obj_prod = cls(dict_prod["name"], dict_prod["description"], dict_prod["price"], dict_prod["quantity"])
+        for item in list_prod:
+            if item.name == new_obj_prod.name:
+                new_obj_prod.quantity += item.quantity
+                if new_obj_prod.price < item.quantity:
+                    new_obj_prod.price = item.price
+                break
         return new_obj_prod
 
     @property
