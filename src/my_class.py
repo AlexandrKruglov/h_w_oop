@@ -17,20 +17,23 @@ class Category:
         self.count_name += 1
         self.count_products = len(self.__products)
 
+    def __len__(self):
+        return len(self.__products)
+
+    def __str__(self):
+        return f'{self.name}, Количество товаров: {len(self)}'
 
     def get_list_podukts(self):
+        '''
+        :return:список продуктов
+        '''
         return self.__products
-
 
     def get_obj(self, obj_prod):
         '''
          добавляент продукт в список продуктов
         :param obj_prod:принимоет объект класса продукт
         '''
-        j = Category.get_list_podukts()
-        for index, item in enumerate(j):
-            if item.name == obj_prod.name:
-                j[index] = obj_prod
         self.__products.append(obj_prod)
 
 
@@ -42,8 +45,7 @@ class Category:
         list_products = self.__products
         new_list = []
         for i in list_products:
-            exmp = f'{i.name}, {i.price} руб. Остаток {i.quantity} шт.'
-            new_list.append(exmp)
+            new_list.append(str(i))
         return "\n".join(new_list)
 
 
@@ -65,6 +67,9 @@ class Product:
         self.price = price
         self.quantity = quantity
 
+    def __str__(self):
+        return (f'{self.name}, {self.price}руб. Остаток: {self.quantity}шт.')
+
     @classmethod
     def create_product(cls, dict_prod):
         '''
@@ -72,14 +77,7 @@ class Product:
         :param dict_prod: словарь
         :return: объект клааса продукт
         '''
-        list_prod = Category.get_list_podukts()
         new_obj_prod = cls(dict_prod["name"], dict_prod["description"], dict_prod["price"], dict_prod["quantity"])
-        for item in list_prod:
-            if item.name == new_obj_prod.name:
-                new_obj_prod.quantity += item.quantity
-                if new_obj_prod.price < item.quantity:
-                    new_obj_prod.price = item.price
-                break
         return new_obj_prod
 
     @property
@@ -100,3 +98,33 @@ class Product:
         if new_price == 0 or new_price < 0:
             print("некоректная цена")
         self.price = new_price
+
+    def __add__(self, other):
+        '''
+        складывает общуюсумму стоимость всех единиц двух видов продукта
+        '''
+        return self.price * self.quantity + other.price * other.quantity
+
+
+class RangeProductc:
+    '''
+    который  дает возможность использовать цикл for
+    для прохода по всем товарам данной категории.
+    при запросе
+    for i in RangeProductc(len(Сategory)):
+    print(i)
+    '''
+
+    def __init__(self, stop):
+        self.stop = stop
+
+    def __iter__(self):
+        self.value = -1
+        return self
+
+    def __next__(self):
+        if self.value + 1 < self.stop:
+            self.value += 1
+            return self.value
+        else:
+            raise StopIteration
