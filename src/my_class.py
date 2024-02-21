@@ -29,7 +29,7 @@ class Category:
         '''
         return self.__products
 
-    def get_obj(self, obj_prod):
+    def add_obj(self, obj_prod):
         '''
          добавляент продукт в список продуктов
         :param obj_prod:принимоет объект класса продукт
@@ -95,7 +95,7 @@ class Product:
         :return: если новая цена = 0 или < 0 возвращает "некоректная цена"
         в противном случае меняет цену
         '''
-        if new_price == 0 or new_price < 0:
+        if new_price <= 0:
             print("некоректная цена")
         self.price = new_price
 
